@@ -54,4 +54,20 @@ public class UsersDAO {
         return user;
     }
 
+    public User update(User user) {
+        Session session = HibernateUtils.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        User updatedUser = session.merge(user);
+
+        transaction.commit();
+        session.close();
+        return updatedUser;
+    }
+
+    public boolean doesExist(String username){
+
+        return true;
+    }
+
 }

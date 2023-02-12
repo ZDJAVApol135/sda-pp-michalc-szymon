@@ -88,8 +88,9 @@ public class UsersDAOTest {
         Assertions.assertEquals(expectedList.size(), usersList.size());
         Assertions.assertIterableEquals(expectedList, usersList);
     }
+
     @Test
-    void testFindByUsername() {
+    void FindByUsername() {
         // given
         String username = UUID.randomUUID().toString();
         User expectedUser = createUser(username);
@@ -106,6 +107,31 @@ public class UsersDAOTest {
         Assertions.assertEquals(expectedUser.getName(), actualUser.getName());
         Assertions.assertEquals(expectedUser.getPassword(), actualUser.getPassword());
         Assertions.assertEquals(expectedUser.getSurname(), actualUser.getSurname());
+    }
+
+    @Test
+    public void updateHappyPath() {
+        //given
+        String username = UUID.randomUUID().toString();
+        User user = createUser(username);
+        usersDAO.create(user);
+
+        int updatedAge = 100;
+        String updatedName = "updated name";
+        user.setName(updatedName);
+        user.setAge(updatedAge);
+
+        //when
+        User updatedUser = usersDAO.update(user);
+
+        //then
+        Assertions.assertNotNull(updatedUser);
+        Assertions.assertEquals(updatedAge, updatedUser.getAge());
+        Assertions.assertEquals(updatedName, updatedUser.getName());
+        Assertions.assertEquals(user.getUsername(), updatedUser.getUsername());
+        Assertions.assertEquals(user.getEmail(), updatedUser.getEmail());
+        Assertions.assertEquals(user.getPassword(), updatedUser.getPassword());
+        Assertions.assertEquals(user.getSurname(), updatedUser.getSurname());
     }
 
     private User createUser(String username) {
