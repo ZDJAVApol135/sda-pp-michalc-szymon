@@ -45,5 +45,13 @@ public class UsersDAO {
         return users;
     }
 
+    public User findByUsername(String username) {
+
+        Session session = HibernateUtils.openSession();
+        User user = session.find(User.class, username);
+        session.close();
+
+        return user;
+    }
 
 }
