@@ -149,12 +149,12 @@ public class UsersDAOTest {
     @Test
     public void testExistsUserFound() {
         //given
-        String username = UUID.randomUUID().toString();
-        User user = createUser(username);
-        usersDAO.create(user);
+        String existingUsername = UUID.randomUUID().toString();
+        User existingUser = createUser(existingUsername);
+        usersDAO.create(existingUser);
 
         //when
-        boolean exists = usersDAO.exists(username);
+        boolean exists = usersDAO.exists(existingUsername);
 
         //then
         Assertions.assertTrue(exists);
