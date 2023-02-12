@@ -65,9 +65,17 @@ public class UsersDAO {
         return updatedUser;
     }
 
-    public boolean doesExist(String username){
-
-        return true;
+    public boolean exists(String username) {
+        try (Session session = HibernateUtils.openSession()) {
+//            pierwsza opcja:
+//            User user = session.find(User.class, username);
+//            return user != null;
+            String query = "SELECT count(u) FROM User u WHERE u.username = :id";
+            Long usersCount = session.createQuery(query, Long.class)
+                    .setParameter("id", username)
+                    .uniqueResult();
+            return usersCount > 0;
+        }
     }
 
 }

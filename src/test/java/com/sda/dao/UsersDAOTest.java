@@ -134,6 +134,32 @@ public class UsersDAOTest {
         Assertions.assertEquals(user.getSurname(), updatedUser.getSurname());
     }
 
+    @Test
+    public void testExistsUserNotFound() {
+        //given
+        String nonExistingUsername = "non existing username";
+
+        //when
+        boolean exists = usersDAO.exists(nonExistingUsername);
+
+        //then
+        Assertions.assertFalse(exists);
+    }
+
+    @Test
+    public void testExistsUserFound() {
+        //given
+        String username = UUID.randomUUID().toString();
+        User user = createUser(username);
+        usersDAO.create(user);
+
+        //when
+        boolean exists = usersDAO.exists(username);
+
+        //then
+        Assertions.assertTrue(exists);
+    }
+
     private User createUser(String username) {
         Faker faker = new Faker();
         Name name = faker.name();
