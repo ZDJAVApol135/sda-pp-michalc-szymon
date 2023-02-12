@@ -36,7 +36,7 @@ public class UsersDAO {
     public List<User> findAll() {
         Session session = HibernateUtils.openSession();
 
-        String selectQuery = "SELECT u FROM Users u";
+        String selectQuery = "SELECT u FROM User u";
 
         List<User> users = session.createQuery(selectQuery, User.class)
                 .list();

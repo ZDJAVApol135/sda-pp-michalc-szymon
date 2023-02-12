@@ -1,5 +1,8 @@
 package com.sda.dao;
 
+import com.github.javafaker.Faker;
+import com.github.javafaker.Internet;
+import com.github.javafaker.Name;
 import com.sda.db.HibernateUtils;
 import com.sda.model.User;
 import org.hibernate.Session;
@@ -8,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,14 +25,8 @@ public class UsersDAOTest {
     void testCreateHappyPath() {
         // given
         String username = UUID.randomUUID().toString();
+        User expectedUser = createUser(username);
 
-        User expectedUser = new User();
-        expectedUser.setUsername(username);
-        expectedUser.setAge(50);
-        expectedUser.setName("John");
-        expectedUser.setPassword("pass");
-        expectedUser.setSurname("Wayne");
-        expectedUser.setEmail("jw@gmail.com");
         // when
         usersDAO.create(expectedUser);
         // then
@@ -47,7 +45,7 @@ public class UsersDAOTest {
     }
 
     @Test
-    void deleteUserNotExists(){
+    void deleteUserNotExists() {
         //given
         String usernameNotExisting = "user name not exist";
         //when
@@ -55,19 +53,14 @@ public class UsersDAOTest {
         //then
         Assertions.assertFalse(deleted);
     }
+
     @Test
     public void deleteUserExists() {
         // given
-        String username = UUID.randomUUID().toString();
+        String username = "username";
+        User expectedUser = createUser(username);
 
-        User user = new User();
-        user.setUsername(username);
-        user.setAge(50);
-        user.setName("John");
-        user.setPassword("pass");
-        user.setSurname("Wayne");
-        user.setEmail("jw@gmail.com");
-        usersDAO.create(user);
+        usersDAO.create(expectedUser);
 
         // when
         boolean deleted = usersDAO.delete(username);
@@ -76,4 +69,58 @@ public class UsersDAOTest {
         Assertions.assertTrue(deleted);
     }
 
+    @Test
+    public void findAll() {
+        // given
+        final List<User> expectedList = List.of(
+                createUser(UUID.randomUUID().toString()),
+                createUser(UUID.randomUUID().toString()),
+                createUser(UUID.randomUUID().toString())
+        );
+
+        expectedList.forEach(usersDAO::create);
+
+        // when
+        List<User> usersList = usersDAO.findAll();
+
+        // then
+        Assertions.assertNotNull(usersList);
+        Assertions.assertEquals(expectedList.size(), usersList.size());
+        Assertions.assertIterableEquals(expectedList, usersList);
+    }
+    @Test
+    void testFindByUsername() {
+        // given
+        String username = UUID.randomUUID().toString();
+        User expectedUser = createUser(username);
+        usersDAO.create(expectedUser);
+
+        // when
+        User actualUser = usersDAO.findByUsername(username);
+
+        // then
+        Assertions.assertNotNull(actualUser);
+        Assertions.assertEquals(expectedUser, actualUser);
+        Assertions.assertEquals(expectedUser.getAge(), actualUser.getAge());
+        Assertions.assertEquals(expectedUser.getEmail(), actualUser.getEmail());
+        Assertions.assertEquals(expectedUser.getName(), actualUser.getName());
+        Assertions.assertEquals(expectedUser.getPassword(), actualUser.getPassword());
+        Assertions.assertEquals(expectedUser.getSurname(), actualUser.getSurname());
+    }
+
+    private User createUser(String username) {
+        Faker faker = new Faker();
+        Name name = faker.name();
+        Internet internet = faker.internet();
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(internet.password());
+        user.setName(name.firstName());
+        user.setAge(faker.number().numberBetween(0, 150));
+        user.setEmail(internet.emailAddress());
+        user.setSurname(name.lastName());
+
+        return user;
+    }
 }
