@@ -13,7 +13,7 @@ public class HibernateUtils {
         return getSessionFactory().openSession();
     }
 
-    private SessionFactory getSessionFactory() {
+    private static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             sessionFactory = createSessionFactory();
         }
