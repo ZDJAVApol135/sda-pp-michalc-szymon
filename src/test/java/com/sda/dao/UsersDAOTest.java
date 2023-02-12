@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class UsersDAOTest {
 
     private final UsersDAO usersDAO = new UsersDAO();
@@ -45,10 +47,19 @@ public class UsersDAOTest {
     }
 
     @Test
-    @DisplayName("This method tests if user was deleted.")
-    void deleteHappyPath(){
+    void deleteUserNotExists(){
         //given
+        String usernameNotExisting = "user name not exist";
+        //when
+        boolean deleted = usersDAO.delete(usernameNotExisting);
+        //then
+        Assertions.assertFalse(deleted);
+    }
+    @Test
+    public void deleteUserExists() {
+        // given
         String username = UUID.randomUUID().toString();
+
         User user = new User();
         user.setUsername(username);
         user.setAge(50);
@@ -56,18 +67,13 @@ public class UsersDAOTest {
         user.setPassword("pass");
         user.setSurname("Wayne");
         user.setEmail("jw@gmail.com");
-        //when
-        usersDAO.delete(username);
-        //then
-        Session session = HibernateUtils.openSession();
-        Transaction transaction = session.beginTransaction();
-        User userToDelete = session.find(User.class, username);
-        if (userToDelete != null) {
-            session.remove(userToDelete);
-        }
-        transaction.commit();
-        session.close();
+        usersDAO.create(user);
 
-        Assertions.assertNull(userToDelete);
+        // when
+        boolean deleted = usersDAO.delete(username);
+
+        // then
+        Assertions.assertTrue(deleted);
     }
+
 }
