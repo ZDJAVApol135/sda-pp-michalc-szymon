@@ -1,32 +1,41 @@
 package com.sda.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
+import java.util.Set;
 
-@Entity
 @Getter
 @Setter
-@AllArgsConstructor
+@Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
     @Id
-    @Column (unique = true)
+    @Column(unique = true)
     private String username;
+
     private String password;
-    @Column (length = 50)
+
+    @Column(length = 50)
     private String name;
-    @Column (length = 50)
+
+    @Column(length = 50)
     private String surname;
+
     private int age;
+
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Address> addresses;
+
+    @OneToMany(mappedBy = "user")
+    private Set<SocialMediaLink> socialMediaLinks;
 
     @Override
     public boolean equals(Object o) {
@@ -40,10 +49,9 @@ public class User {
                 Objects.equals(surname, user.surname) &&
                 Objects.equals(email, user.email);
     }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), getName(), getSurname(), getAge(), getEmail());
+        return Objects.hash(username, password, name, surname, age, email);
     }
-
-
 }
