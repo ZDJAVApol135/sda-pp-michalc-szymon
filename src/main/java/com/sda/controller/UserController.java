@@ -13,10 +13,10 @@ public class UserController {
 
     public void findAll(){
         List<UserDTO> all = userService.findAll();
-        if (all == null){
+        if (all.isEmpty()){
             System.out.println("Users list empty!");
         }
-        System.out.println(all);
+        System.out.println(all.stream());
     }
 
     public void findByUsername(String username){
