@@ -39,18 +39,31 @@ public class UserController {
     public void deleteByUsername(String username) {
         try {
             usersService.deleteByUsername(username);
-            System.out.printf("User %s%n deleted!", username);
+            System.out.printf("User with username '%s' deleted!%n", username);
         } catch (NotFoundException e) {
             log.error("NotFoundException: {}", e.getMessage());
         }
     }
-    public void create(User user){
+
+    public void create(User user) {
         try {
             usersService.create(user);
-            System.out.printf("User %s%n created!", user);
+            System.out.printf("User '%s%n' created!\n", user.getUsername());
         } catch (UsernameConflictException e) {
             log.error("UsernameConflictException: {}", e.getMessage());
         }
     }
 
+    public void update(User user, String username) {
+        try {
+            UserDTO updatedUser = usersService.update(user, username);
+            System.out.printf("User with '%s%n' updated!\n", username);
+            System.out.printf("User after update: %s.\n", username);
+
+        } catch (UsernameConflictException e) {
+            log.error("UsernameConflictException: {}", e.getMessage());
+        } catch (NotFoundException e) {
+            log.error("NotFoundException: {}", e.getMessage());
+        }
+    }
 }
