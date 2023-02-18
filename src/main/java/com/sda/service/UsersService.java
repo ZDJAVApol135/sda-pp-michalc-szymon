@@ -58,12 +58,11 @@ public class UsersService {
     }
 
     public UserDTO update(User user, String username) {
-
-        throwNotFoundExceptionIfTrue(username, !usersDAO.exists(username));
         if (!user.getUsername().equals(username)) {
             String message = "User: '%s' is not same as username: '%s'. Update not possible".formatted(user, username);
             throw new UsernameConflictException(message);
         }
+        throwNotFoundExceptionIfTrue(username, !usersDAO.exists(username));
         User updated = usersDAO.update(user);
         return userMapper.map(updated);
     }
