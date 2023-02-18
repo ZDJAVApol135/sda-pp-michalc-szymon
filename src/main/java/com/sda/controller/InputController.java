@@ -1,10 +1,12 @@
 package com.sda.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InputController {
 
     private final Scanner scanner = new Scanner(System.in);
@@ -27,7 +29,13 @@ public class InputController {
     }
 
     public int getAge() {
-        return Integer.parseInt(getString("Enter age: "));
+        String ageStr = getString("Enter age: ");
+        try {
+            return Integer.parseInt(ageStr);
+        } catch (NumberFormatException e) {
+            log.error("Invalid age input! Defaulting to 0.");
+            return 0;
+        }
     }
 
     public String getEmail() {
