@@ -44,21 +44,29 @@ public class UsersService {
     }
 
     public void deleteByUsername(String username) {
-        boolean delete = usersDAO.delete(username);
-
-        if (!delete) {
-            String message = "User with username: '%s' not found".formatted(username);
-            throw new NotFoundException(message);
-        }
+        boolean deleted = usersDAO.delete(username);
+        throwNotFoundExceptionIfTrue(username, !deleted);
     }
 
     public void create(User user) {
         boolean exists = usersDAO.exists(user.getUsername());
-        if (exists){
+        if (exists) {
             String message = "User: '%s' already exists".formatted(user);
             throw new UsernameConflictException(message);
         } else {
             usersDAO.create(user);
+        }
+    }
+
+    public UserDTO update(User user, String username) {
+
+        return null;
+    }
+
+    public void throwNotFoundExceptionIfTrue(String username, boolean condidtion) {
+        if (condidtion) {
+            String message = "User with username: '%s' not found".formatted(username);
+            throw new UsernameConflictException(message);
         }
     }
 }
