@@ -53,18 +53,24 @@ public class UsersService {
         if (exists) {
             String message = "User: '%s' already exists".formatted(user);
             throw new UsernameConflictException(message);
-        } else {
-            usersDAO.create(user);
         }
+        usersDAO.create(user);
     }
 
     public UserDTO update(User user, String username) {
 
-        return null;
+        throwNotFoundExceptionIfTrue(username, !usersDAO.exists(username));
+        if (!user.getUsername().equals(username)) {
+            String message = "User: '%s' is not same as username: '%s'. Update not possible".formatted(user, username);
+            throw new UsernameConflictException(message);
+        }
+        User updated = usersDAO.update(user);
+        return userMapper.map(updated);
     }
 
-    public void throwNotFoundExceptionIfTrue(String username, boolean condidtion) {
-        if (condidtion) {
+
+    public void throwNotFoundExceptionIfTrue(String username, boolean condition) {
+        if (condition) {
             String message = "User with username: '%s' not found".formatted(username);
             throw new UsernameConflictException(message);
         }
