@@ -4,17 +4,20 @@ import com.sda.dto.UserDTO;
 import com.sda.exception.NotFoundException;
 import com.sda.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
+@Slf4j // Logger
 public class UserController {
-
+    //    private static final Logger log = Logger.
     private final UsersService usersService;
 
-    public void findAll(){
+    public void findAll() {
         List<UserDTO> all = usersService.findAll();
-        if (all.isEmpty()){
+        if (all.isEmpty()) {
             System.out.println("Users list empty!");
         } else {
             System.out.println("Users list: ");
@@ -22,12 +25,22 @@ public class UserController {
         }
     }
 
-    public void findByUsername(String username){
+    public void findByUsername(String username) {
         try {
-            UserDTO user = usersService.findByUsername(username);
-            System.out.println("User found: " + user);
+            UserDTO userDTO = usersService.findByUsername(username);
+            System.out.printf("User found: %s%n", userDTO);
         } catch (NotFoundException e) {
-            System.out.println(e.getMessage());
+            log.error("NotFoundException: {}", e.getMessage());
         }
     }
+
+    public void deleteByUsername(String username) {
+        try {
+            usersService.deleteByUsername(username);
+            System.out.printf("User %s%n deleted", username);
+        } catch (NotFoundException e) {
+            log.error("NotFoundException: {}", e.getMessage());
+        }
+    }
+
 }
