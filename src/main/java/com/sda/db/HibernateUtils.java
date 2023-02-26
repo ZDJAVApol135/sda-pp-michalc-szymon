@@ -1,5 +1,7 @@
 package com.sda.db;
 
+import com.sda.model.Address;
+import com.sda.model.SocialMediaLink;
 import com.sda.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,7 +24,9 @@ public class HibernateUtils {
 
     private static SessionFactory createSessionFactory() {
         Configuration configuration = new Configuration()
-                .addAnnotatedClass(User.class);
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(Address.class)
+                .addAnnotatedClass(SocialMediaLink.class);
 
         return configuration.buildSessionFactory();
     }
